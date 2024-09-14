@@ -22,5 +22,8 @@
     "cypress": "^13.14.2",
     "cypress-sql-server": "^1.0.0",
     "mssql": "^11.0.1"
+  },
+  "dependencies": {
+    "tedious": "^18.6.1"
   }
 }

@@ -1,27 +1,36 @@
-const { defineConfig } = require('cypress');
-const cypressSqlServer = require('cypress-sql-server');
 const sqlServer = require('mssql');
 
-module.exports = defineConfig({
+module.exports = {
   e2e: {
     setupNodeEvents(on, config) {
-      cypressSqlServer.loadDBPlugin(on, config);
-
+      // Task to call stored procedures
       on('task', {
-        queryDb(query) {
+        callStoredProcedure({ procedureName, inputParams }) {
+          // Database connection configuration
           const dbConfig = {
             user: config.env.db.userName,
             password: config.env.db.password,
             server: config.env.db.server,
             database: config.env.db.database,
-            options: config.env.db.options
+            options: {
+              encrypt: true,
+            },
           };
 
-          return sqlServer.connect(dbConfig).then(pool => {
-            return pool.request().query(query);
-          }).then(result => {
-            return result.recordset;
-          }).catch(err => {
+          // Connect to the database and call the stored procedure
+          return sqlServer.connect(dbConfig).then((pool) => {
+            const request = pool.request();
+
+            // Add input parameters to the stored procedure
+            inputParams.forEach((param) => {
+              request.input(param.name, param.type, param.value);
+            });
+
+            // Execute the stored procedure
+            return request.execute(procedureName);
+          })
+          .then((result) => result.recordset)
+          .catch((err) => {
             console.error(err);
             throw err;
           });
@@ -29,8 +38,6 @@ module.exports = defineConfig({
       });
 
       return config;
-    },
-    baseUrl: 'http://36.255.69.198/auth/login', // Update with your app URL if needed
-  },
-});
-
+    }
+  }
+};
