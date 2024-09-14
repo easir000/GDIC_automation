@@ -1,0 +1,26 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "env": {
+    "DB": {
+      "user": "qa",
+      "host": "36.255.69.198",
+      "database": "cis_backend_qa",
+      "password": "QaGdic@1234",
+      "port": 32763
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.14.2",
+    "cypress-sql-server": "^1.0.0",
+    "mssql": "^11.0.1"
+  }
+}
